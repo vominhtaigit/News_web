@@ -1,15 +1,20 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';  // Import hàm fileURLToPath từ 'url'
 import newsRoutes from './routes/newsRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
-import Category from './models/categoryModel.js'; // Import model Category nếu cần
+import Category from './models/categoryModel.js';
 
 // Load environment variables
 dotenv.config();
 
-// Entry point for the News Web Project
+// Định nghĩa __filename và __dirname trong ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Entry point for the News Web Project
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc';
@@ -17,12 +22,19 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc'
 // Middleware to parse JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Phục vụ ảnh tĩnh trong thư mục uploads
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Các route
 app.use('/news', newsRoutes);
-// Set view engine and views directory
+app.use('/api/news', newsRoutes);
+
+// Set view engine và views directory
 app.set('view engine', 'ejs');
 app.set('views', './src/views'); // Đường dẫn tới thư mục views
 
-// Connect to MongoDB
+// Kết nối với MongoDB
 mongoose
     .connect(MONGO_URI, {
         useNewUrlParser: true,
@@ -40,7 +52,7 @@ app.get('/', (req, res) => {
     res.send('Welcome to the News Web Project!');
 });
 
-// Route to render create news form
+// Route để render create news form
 app.get('/createNews', async (req, res) => {
     try {
         const categories = await Category.find(); // Lấy danh sách danh mục
@@ -52,8 +64,6 @@ app.get('/createNews', async (req, res) => {
 
 // Kết nối route
 app.use('/', newsRoutes);
-
-// Kết nối route danh mục
 app.use('/categories', categoryRoutes);
 
 // Start the server
