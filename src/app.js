@@ -1,8 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';  // Import hàm fileURLToPath từ 'url'
 import newsRoutes from './routes/newsRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js'; // Add admin routes import
 import userRoutes from './routes/userRoutes.js'; // Add user routes import
@@ -14,8 +17,11 @@ import Category from './models/categoryModel.js'; // Add this import
 // Load environment variables
 dotenv.config();
 
-// Entry point for the News Web Project
+// Định nghĩa __filename và __dirname trong ES module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// Entry point for the News Web Project
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc';
@@ -24,27 +30,11 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc'
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files from public directory
-app.use(express.static('public'));
 
-// Middleware cho session
-app.use(
-    session({
-        secret: 'your_secret_key', // Thay bằng secret key của bạn
-        resave: false,
-        saveUninitialized: false,
-    })
-);
-
-// Middleware cho Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Set view engine and views directory
 app.set('view engine', 'ejs');
 app.set('views', './src/views'); // Đường dẫn tới thư mục views
 
-// Connect to MongoDB
+// Kết nối với MongoDB
 mongoose
     .connect(MONGO_URI, {
         useNewUrlParser: true,
@@ -57,13 +47,7 @@ mongoose
         console.error('Failed to connect to MongoDB:', err.message);
     });
 
-// Route for home page
-app.get('/', renderHomePage); // Sử dụng HomeController để render index.ejs
 
-// Kết nối route tin tức
-app.use('/news', newsRoutes);
-
-// Kết nối route danh mục
 app.use('/categories', categoryRoutes);
 
 // Kết nối route auth
