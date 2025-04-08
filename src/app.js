@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import newsRoutes from './routes/newsRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/adminRoutes.js'; // Add admin routes import
+import userRoutes from './routes/userRoutes.js'; // Add user routes import
 import session from 'express-session';
 import passport from '../config/passportConfig.js'; // Corrected path
 import { renderHomePage } from './controllers/HomeController.js'; // Corrected path
@@ -66,6 +68,12 @@ app.use('/categories', categoryRoutes);
 
 // Kết nối route auth
 app.use('/auth', authRoutes);
+
+// Add user routes
+app.use('/users', userRoutes);
+
+// Add admin routes
+app.use('/admin', adminRoutes);
 
 // Start the server
 app.listen(PORT, () => {

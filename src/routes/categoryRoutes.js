@@ -1,7 +1,9 @@
 import express from 'express';
-import { getAllCategories, createCategory, deleteCategory, renderCreateCategoryPage } from '../controllers/categoryController.js';
+import { getAllCategories, createCategory, deleteCategory, renderCreateCategoryPage, updateCategory, renderEditCategoryPage } from '../controllers/categoryController.js';
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 import { isAdmin } from '../middlewares/roleMiddleware.js';
+import News from '../models/newsModel.js';
+import Category from '../models/categoryModel.js';
 
 const router = express.Router();
 
@@ -15,12 +17,12 @@ router.post('/create', isAuthenticated, isAdmin, createCategory);
 router.get('/create', isAuthenticated, renderCreateCategoryPage);
 
 // Route để hiển thị form sửa danh mục (chỉ dành cho admin)
-router.get('/edit/:id', isAuthenticated, isAdmin, (req, res) => {
-    const categoryId = req.params.id;
-    res.render('editCategory', { categoryId }); // Render view 'editCategory.ejs' và truyền categoryId
-});
+router.get('/edit/:id', isAuthenticated, isAdmin, renderEditCategoryPage);
 
 // Route để xóa danh mục (chỉ dành cho admin)
 router.delete('/:id', isAuthenticated, isAdmin, deleteCategory);
+
+// Route để cập nhật danh mục (chỉ dành cho admin)
+router.post('/update/:id', isAuthenticated, isAdmin, updateCategory);
 
 export default router;

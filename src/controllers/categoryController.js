@@ -30,6 +30,21 @@ export const deleteCategory = async (req, res) => {
     }
 };
 
+export const updateCategory = async (req, res) => {
+    const { name, description } = req.body;
+    try {
+        const category = await Category.findByIdAndUpdate(
+            req.params.id,
+            { name, description, updatedAt: Date.now() },
+            { new: true }
+        );
+        if (!category) return res.status(404).send('Category not found');
+        res.redirect('/admin'); // Redirect back to admin page after update
+    } catch (err) {
+        res.status(400).send('Error updating category: ' + err.message);
+    }
+};
+
 export const renderCreateCategoryPage = (req, res) => {
     res.render('createCategories', { user: req.user });
 };
@@ -41,5 +56,17 @@ export const renderCreateNewsPage = async (req, res) => {
         res.render('createNews', { categories, user: req.user });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
+    }
+};
+
+export const renderEditCategoryPage = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+        if (!category) {
+            return res.status(404).send('Category not found');
+        }
+        res.render('updateCategory', { category }); // Change from editCategory to updateCategory
+    } catch (err) {
+        res.status(500).send('Error fetching category: ' + err.message);
     }
 };

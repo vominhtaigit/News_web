@@ -6,6 +6,7 @@ import {
     updateNews,
     deleteNews,
     renderCreateNewsPage,
+    renderEditNewsPage,
     upload,
 } from '../controllers/newsController.js';
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
@@ -21,12 +22,17 @@ router.get('/create', isAuthenticated, renderCreateNewsPage);
 // Create news routes (must come before /:id route)
 router.post('/create', isAuthenticated, upload.single('image'), createNews);
 
+// Route for editing news (must come before /:id route)
+router.get('/edit/:id', isAuthenticated, renderEditNewsPage);
+
 // Public routes
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 
-// Update & delete routes
-router.put('/:id', isAuthenticated, updateNews);
+// Update route should use POST instead of PUT for form submission
+router.post('/update/:id', isAuthenticated, upload.single('image'), updateNews);
+
+// Delete route
 router.delete('/:id', isAuthenticated, deleteNews);
 
 export default router;
