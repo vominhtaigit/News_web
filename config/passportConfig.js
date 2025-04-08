@@ -1,15 +1,16 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import User from '../models/userModel.js';
+import bcrypt from 'bcrypt';
+import User from '../src/models/userModel.js'; // Corrected path
 
+// Cấu hình chiến lược Local
 passport.use(
-    new LocalStrategy(async (username, password, done) => {
+    new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
         try {
-            const user = await User.findOne({ username });
-            if (!user) return done(null, false, { message: 'User not found' });
-            const isMatch = await user.comparePassword(password);
-            if (!isMatch) return done(null, false, { message: 'Incorrect password' });
+            const user = await User.findOne({ email });
+            if (!user || !(await user.comparePassword(password))) {
+                return done(null, false, { message: 'Invalid email or password' });
+            }
             return done(null, user);
         } catch (err) {
             return done(err);
@@ -17,30 +18,42 @@ passport.use(
     })
 );
 
-passport.use(
-    new GoogleStrategy(
-        {
-            clientID: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: '/auth/google/callback',
-        },
-        async (accessToken, refreshToken, profile, done) => {
-            try {
-                let user = await User.findOne({ googleId: profile.id });
-                if (!user) {
-                    user = await User.create({
-                        googleId: profile.id,
-                        username: profile.displayName,
-                        email: profile.emails[0].value,
-                    });
-                }
-                return done(null, user);
-            } catch (err) {
-                return done(err);
-            }
-        }
-    )
-);
+// Serialize user
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
 
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) => User.findById(id, done));
+// Deserialize user
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (err) {
+        done(err);
+    }
+});
+
+export const register = async (req, res) => {
+    const { username, email, password } = req.body;
+    try {
+        // Check if email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send('Email is already registered');
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create and save the user
+        const user = new User({ username, email, password: hashedPassword });
+        await user.save();
+
+        // Redirect to login page
+        res.redirect('/auth/login');
+    } catch (err) {
+        res.status(400).send('Error registering user: ' + err.message);
+    }
+};
+
+export default passport;
