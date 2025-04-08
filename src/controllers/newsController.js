@@ -72,16 +72,42 @@ export const createNews = async (req, res) => {
     }
 };
 
+export const renderEditNewsPage = async (req, res) => {
+    try {
+        const news = await News.findById(req.params.id);
+        const categories = await Category.find();
+        if (!news) {
+            return res.status(404).send('News not found');
+        }
+        res.render('updateNews', { news, categories });
+    } catch (err) {
+        res.status(500).send('Error rendering edit news form: ' + err.message);
+    }
+};
+
 export const updateNews = async (req, res) => {
     const { title, content, category } = req.body;
     try {
+        const updateData = {
+            title,
+            content,
+            category,
+            updatedAt: Date.now()
+        };
+
+        // Add image to update data if a new file was uploaded
+        if (req.file) {
+            updateData.image = `/images/${req.file.filename}`;
+        }
+
         const news = await News.findByIdAndUpdate(
             req.params.id,
-            { title, content, category, updatedAt: Date.now() },
+            updateData,
             { new: true }
         );
+        
         if (!news) return res.status(404).send('News not found');
-        res.redirect('/news');
+        res.redirect('/admin');
     } catch (err) {
         res.status(400).send('Error updating news: ' + err.message);
     }
@@ -103,5 +129,15 @@ export const renderCreateNewsPage = async (req, res) => {
         res.render('createNews', { categories });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
+    }
+};
+
+export const renderAdminPage = async (req, res) => {
+    try {
+        const news = await News.find().populate('category');
+        const categories = await Category.find();
+        res.render('admin', { news, categories });
+    } catch (err) {
+        res.status(500).send('Error rendering admin page: ' + err.message);
     }
 };

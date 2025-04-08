@@ -15,10 +15,11 @@ function roleMiddleware(requiredRole) {
 }
 
 export const isAdmin = (req, res, next) => {
+    console.log('Checking admin role:', req.user);
     if (req.user && req.user.role === 'admin') {
         return next();
     }
-    res.status(403).send('Access denied. Admins only.');
+    res.redirect('/auth/login');
 };
 
 export const isAuthenticated = (req, res, next) => {
