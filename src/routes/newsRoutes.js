@@ -5,23 +5,27 @@ import {
     createNews,
     updateNews,
     deleteNews,
-    renderCreateNewsPage, // Ensure this is imported
+    renderCreateNewsPage,
+    upload,
 } from '../controllers/newsController.js';
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
+// Apply middlewares in correct order
+router.use(express.urlencoded({ extended: true }));
+
+// Route for rendering create news page (must come before /:id route)
+router.get('/create', isAuthenticated, renderCreateNewsPage);
+
+// Create news routes (must come before /:id route)
+router.post('/create', isAuthenticated, upload.single('image'), createNews);
+
 // Public routes
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 
-// Only logged-in users can access the create news page
-router.get('/create', isAuthenticated, renderCreateNewsPage);
-
-// Route POST to handle creating news
-router.post('/create', isAuthenticated, createNews);
-
-// Route PUT/DELETE for update & delete
+// Update & delete routes
 router.put('/:id', isAuthenticated, updateNews);
 router.delete('/:id', isAuthenticated, deleteNews);
 

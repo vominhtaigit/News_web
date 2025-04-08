@@ -1,4 +1,4 @@
-import Category from '../models/categoryModel.js';
+import Category from '../models/categoryModel.js'; // Adjust path if necessary
 
 export const getAllCategories = async (req, res) => {
     try {
@@ -14,7 +14,7 @@ export const createCategory = async (req, res) => {
     try {
         const category = new Category({ name, description });
         await category.save();
-        res.redirect('/categories'); // Chuyển hướng đến danh sách categories
+        res.redirect('/categories');
     } catch (err) {
         res.status(400).send('Error creating category: ' + err.message);
     }
@@ -29,9 +29,17 @@ export const deleteCategory = async (req, res) => {
         res.status(500).send('Error deleting category: ' + err.message);
     }
 };
-export const renderCreateCategoryForm = (req, res) => {
-    res.render('createCategories'); // Render view 'createCategories.ejs'
-};
+
 export const renderCreateCategoryPage = (req, res) => {
     res.render('createCategories', { user: req.user });
+};
+
+export const renderCreateNewsPage = async (req, res) => {
+    try {
+        console.log(Category); // Check if Category is defined
+        const categories = await Category.find(); // Fetch categories for the form
+        res.render('createNews', { categories, user: req.user });
+    } catch (err) {
+        res.status(500).send('Error rendering create news form: ' + err.message);
+    }
 };

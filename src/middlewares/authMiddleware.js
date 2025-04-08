@@ -20,6 +20,9 @@ export default authMiddleware;
 
 // Middleware giả để bỏ qua kiểm tra đăng nhập
 export const isAuthenticated = (req, res, next) => {
-    req.user = null; // Tạm thời không có user
-    next();
+    console.log('isAuthenticated middleware called');
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/auth/login'); // Redirect to login if not authenticated
 };

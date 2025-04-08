@@ -1,14 +1,30 @@
-<form action="/news/create" method="POST">
-    <input type="text" name="title" placeholder="Tiêu đề" />
-    <textarea name="content" placeholder="Nội dung"></textarea>
-
-    <select name="category">
-        <% categories.forEach(category => { %>
-            <option value="<%= category._id %>"><%= category.name %></option>
-        <% }); %>
-    </select>
-
-    <button type="submit">Tạo bài viết</button>
-</form>
-<a href="/news">Quay lại</a>
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create News</title>
+</head>
+<body>
+    <h1>Create News</h1>
+    <form action="/news/create" method="POST" enctype="multipart/form-data">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+        <br>
+        <label for="content">Content:</label>
+        <textarea name="content" id="content" required></textarea>
+        <br>
+        <label for="category">Category:</label>
+        <select name="category" id="category" required>
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.name %></option>
+            <% }); %>
+        </select>
+        <br>
+        <label for="image">Image:</label>
+        <input type="file" name="image" id="image" accept="image/*">
+        <br>
+        <button type="submit">Create News</button>
+    </form>
+</body>
+</html>

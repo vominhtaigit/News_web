@@ -31,5 +31,5 @@ export const logout = (req, res) => {
 };
 
 export const renderRegisterPage = (req, res) => {
-    res.render('register', { user: req.user });
+    res.render('auth/register', { user: req.user }); // Adjust path to match the file location
 };

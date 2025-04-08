@@ -1,5 +1,40 @@
 import News from '../models/newsModel.js';
 import Category from '../models/categoryModel.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+
+// Setup multer storage
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = 'public/images';
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)){
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+// Create the multer instance but don't export directly
+const uploadMiddleware = multer({ 
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        const filetypes = /jpeg|jpg|png/;
+        const mimetype = filetypes.test(file.mimetype);
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error("Error: Images Only!"));
+    }
+});
+
+// Export a wrapped version of the middleware
+export const upload = uploadMiddleware;
 
 export const getAllNews = async (req, res) => {
     try {
@@ -27,7 +62,8 @@ export const createNews = async (req, res) => {
             title,
             content,
             category,
-            author: null, // Tạm thời để null
+            author: req.user._id, // Automatically set the author
+            image: req.file ? `/images/${req.file.filename}` : null // Save image path if uploaded
         });
         await news.save();
         res.redirect('/news'); // Chuyển hướng đến danh sách tin tức
@@ -61,15 +97,11 @@ export const deleteNews = async (req, res) => {
     }
 };
 
-export const renderCreateNewsForm = async (req, res) => {
+export const renderCreateNewsPage = async (req, res) => {
     try {
-        const categories = await Category.find(); // Lấy danh sách danh mục
-        res.render('createNews', { categories }); // Render view 'createNews.ejs'
+        const categories = await Category.find(); // Fetch categories for the form
+        res.render('createNews', { categories });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
     }
 };
-
- export const renderCreateNewsPage = (req, res) => {
-     res.render('createNews', { user: req.user });
- };

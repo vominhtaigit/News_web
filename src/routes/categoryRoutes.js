@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', getAllCategories);
 
 // Route để tạo danh mục (chỉ dành cho admin)
-router.post('/', isAuthenticated, isAdmin, createCategory);
+router.post('/create', isAuthenticated, isAdmin, createCategory);
 
 // Only logged-in users can access the create category page
 router.get('/create', isAuthenticated, renderCreateCategoryPage);

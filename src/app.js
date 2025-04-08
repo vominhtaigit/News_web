@@ -7,6 +7,8 @@ import authRoutes from './routes/authRoutes.js';
 import session from 'express-session';
 import passport from '../config/passportConfig.js'; // Corrected path
 import { renderHomePage } from './controllers/HomeController.js'; // Corrected path
+import Category from './models/categoryModel.js'; // Add this import
+
 // Load environment variables
 dotenv.config();
 
@@ -16,9 +18,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc';
 
-// Middleware to parse JSON
+// Middleware to parse JSON and form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from public directory
+app.use(express.static('public'));
 
 // Middleware cho session
 app.use(
@@ -52,16 +57,6 @@ mongoose
 
 // Route for home page
 app.get('/', renderHomePage); // Sử dụng HomeController để render index.ejs
-
-// Route to render create news form
-app.get('/createNews', async (req, res) => {
-    try {
-        const categories = await Category.find(); // Lấy danh sách danh mục
-        res.render('createNews', { categories }); // Render view 'createNews.ejs'
-    } catch (err) {
-        res.status(500).send('Error rendering create news form: ' + err.message);
-    }
-});
 
 // Kết nối route tin tức
 app.use('/news', newsRoutes);
