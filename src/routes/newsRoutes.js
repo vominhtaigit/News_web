@@ -5,7 +5,7 @@ import {
     createNews,
     updateNews,
     deleteNews,
-    renderCreateNewsForm,
+    renderCreateNewsPage, // Ensure this is imported
 } from '../controllers/newsController.js';
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 
@@ -15,13 +15,13 @@ const router = express.Router();
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 
-// Route GET để hiển thị form tạo tin
-router.get('/create',  renderCreateNewsForm); // <-- chỉ dùng /news/create
+// Only logged-in users can access the create news page
+router.get('/create', isAuthenticated, renderCreateNewsPage);
 
-// Route POST để xử lý tạo tin mới
-router.post('/create',  createNews);
+// Route POST to handle creating news
+router.post('/create', isAuthenticated, createNews);
 
-// Route PUT/DELETE cho update & xóa
+// Route PUT/DELETE for update & delete
 router.put('/:id', isAuthenticated, updateNews);
 router.delete('/:id', isAuthenticated, deleteNews);
 

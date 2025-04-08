@@ -32,3 +32,6 @@ export const deleteCategory = async (req, res) => {
 export const renderCreateCategoryForm = (req, res) => {
     res.render('createCategories'); // Render view 'createCategories.ejs'
 };
+export const renderCreateCategoryPage = (req, res) => {
+    res.render('createCategories', { user: req.user });
+};

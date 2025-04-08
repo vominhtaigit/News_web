@@ -69,3 +69,7 @@ export const renderCreateNewsForm = async (req, res) => {
         res.status(500).send('Error rendering create news form: ' + err.message);
     }
 };
+
+ export const renderCreateNewsPage = (req, res) => {
+     res.render('createNews', { user: req.user });
+ };

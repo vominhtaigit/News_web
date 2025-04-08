@@ -21,4 +21,11 @@ export const isAdmin = (req, res, next) => {
     res.status(403).send('Access denied. Admins only.');
 };
 
-module.exports = roleMiddleware;
+export const isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/auth/login'); // Redirect to login if not authenticated
+};
+
+export default roleMiddleware;

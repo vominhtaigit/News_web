@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Web</title>
+    <link rel="stylesheet" href="/styles/main.css"> <!-- Link to your CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome to News Web</h1>
+        <% if (user) { %>
+            <p>Logged in as: <%= user.username %></p>
+            <a href="/auth/logout">Logout</a>
+        <% } else { %>
+            <a href="/auth/login">Login</a> | <a href="/auth/register">Register</a>
+        <% } %>
+    </header>
+    <main>
+        <section>
+            <h2>Categories</h2>
+            <ul>
+                <% categories.forEach(category => { %>
+                    <li><a href="/category/<%= category._id %>"><%= category.name %></a></li>
+                <% }); %>
+            </ul>
+        </section>
+        <section>
+            <h2>Latest News</h2>
+            <% if (news.length > 0) { %>
+                <ul>
+                    <% news.forEach(article => { %>
+                        <li>
+                            <h3><a href="/news/<%= article._id %>"><%= article.title %></a></h3>
+                            <p><%= article.summary %></p>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No news available at the moment.</p>
+            <% } %>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 News Web</p>
+    </footer>
+</body>
+</html>
