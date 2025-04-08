@@ -30,9 +30,28 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/webtintuc'
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.set('view engine', 'ejs');
 app.set('views', './src/views'); // Đường dẫn tới thư mục views
+
+// Serve static files from public directory 
+app.use(express.static('public'));
+app.use('/images', express.static('public/images'));
+
+// Serve static files from the 'uploads' folder
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Middleware for session
+app.use(
+    session({
+        secret: 'your_secret_key',
+        resave: false,
+        saveUninitialized: false,
+    })
+);
+
+// Initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Kết nối với MongoDB
 mongoose
@@ -47,16 +66,14 @@ mongoose
         console.error('Failed to connect to MongoDB:', err.message);
     });
 
+// Route for home page
+app.get('/', renderHomePage);
 
+// Connect routes
+app.use('/news', newsRoutes);
 app.use('/categories', categoryRoutes);
-
-// Kết nối route auth
 app.use('/auth', authRoutes);
-
-// Add user routes
 app.use('/users', userRoutes);
-
-// Add admin routes
 app.use('/admin', adminRoutes);
 
 // Start the server

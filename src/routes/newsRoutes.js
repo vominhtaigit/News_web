@@ -1,15 +1,14 @@
 import express from 'express';
-import upload from '../middlewares/uploadMiddleware.js';
-import News from '../models/newsModel.js';
+import upload from '../middlewares/uploadMiddleware.js'; // Keep this import
 import {
     getAllNews,
     getNewsById,
+    createNews,
     updateNews,
     deleteNews,
     renderCreateNewsPage,
     renderEditNewsPage,
-    upload,
-} from '../controllers/newsController.js';
+} from '../controllers/newsController.js'; // Remove `upload` from here
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
@@ -30,12 +29,10 @@ router.get('/edit/:id', isAuthenticated, renderEditNewsPage);
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 
-
 // Update route should use POST instead of PUT for form submission
 router.post('/update/:id', isAuthenticated, upload.single('image'), updateNews);
 
 // Delete route
-
 router.delete('/:id', isAuthenticated, deleteNews);
 
 export default router;

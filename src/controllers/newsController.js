@@ -63,7 +63,7 @@ export const createNews = async (req, res) => {
             content,
             category,
             author: req.user._id, // Automatically set the author
-            image: req.file ? `/images/${req.file.filename}` : null // Save image path if uploaded
+            image: req.file ? `/uploads/${req.file.filename}` : null // Update image path to use /uploads
         });
         await news.save();
         res.redirect('/news'); // Chuyển hướng đến danh sách tin tức
