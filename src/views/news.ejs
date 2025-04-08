@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+    <header>
+        <h1>Latest News</h1>
+    </header>
+    <main>
+        <section id="news-list">
+            <% if (news && news.length > 0) { %>
+                <ul>
+                    <% news.forEach((article) => { %>
+                        <li>
+                            <h2><%= article.title %></h2>
+                            <p><%= article.content.substring(0, 100) %>...</p>
+                            <p>Category: <%= article.category ? article.category.name : 'Uncategorized' %></p>
+                            <p>Author: <%= article.author ? article.author.username : 'Unknown' %></p>
+                        </li>
+                    <% }) %>
+                </ul>
+                <br>
+                <a href="/createNews">Create New News</a>
+            <% } else { %>
+                <p>No news articles available at the moment.</p>
+            <% } %>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> News Web Project</p>
+    </footer>
+</body>
+</html>

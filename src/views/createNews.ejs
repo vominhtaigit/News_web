@@ -1,0 +1,14 @@
+<form action="/news/create" method="POST">
+    <input type="text" name="title" placeholder="Tiêu đề" />
+    <textarea name="content" placeholder="Nội dung"></textarea>
+
+    <select name="category">
+        <% categories.forEach(category => { %>
+            <option value="<%= category._id %>"><%= category.name %></option>
+        <% }); %>
+    </select>
+
+    <button type="submit">Tạo bài viết</button>
+</form>
+<a href="/news">Quay lại</a>
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
