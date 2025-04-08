@@ -5,7 +5,9 @@ const newsSchema = new mongoose.Schema({
     content: { type: String, required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // Không bắt buộc
-    image: { type: String }, // Store the image path
+
+    image: { type: String, required: false }, // Thêm trường ảnh
+
     createdAt: { type: Date, default: Date.now },
 });
 

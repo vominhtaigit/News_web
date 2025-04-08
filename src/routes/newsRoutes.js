@@ -1,8 +1,9 @@
 import express from 'express';
+import upload from '../middlewares/uploadMiddleware.js';
+import News from '../models/newsModel.js';
 import {
     getAllNews,
     getNewsById,
-    createNews,
     updateNews,
     deleteNews,
     renderCreateNewsPage,
@@ -25,7 +26,7 @@ router.post('/create', isAuthenticated, upload.single('image'), createNews);
 router.get('/', getAllNews);
 router.get('/:id', getNewsById);
 
-// Update & delete routes
+
 router.put('/:id', isAuthenticated, updateNews);
 router.delete('/:id', isAuthenticated, deleteNews);
 

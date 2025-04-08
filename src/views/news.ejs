@@ -17,6 +17,9 @@
                     <% news.forEach((article) => { %>
                         <li>
                             <h2><%= article.title %></h2>
+                            <% if (article.image) { %>
+                                <img src="<%= article.image %>" alt="<%= article.title %>" style="max-width: 200px; height: auto;">
+                            <% } %>
                             <p><%= article.content.substring(0, 100) %>...</p>
                             <p>Category: <%= article.category ? article.category.name : 'Uncategorized' %></p>
                             <p>Author: <%= article.author ? article.author.username : 'Unknown' %></p>
