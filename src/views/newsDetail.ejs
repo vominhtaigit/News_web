@@ -4,12 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= news.title %></title>
+    <link rel="stylesheet" href="/styles/main.css"> <!-- Liên kết đến CSS -->
 </head>
 <body>
-    <h1><%= news.title %></h1>
-    <p>Category: <%= news.category.name %></p>
-    <p>Author: <%= news.author.username %></p>
-    <p><%= news.content %></p>
-    <a href="/news">Back to News</a>
+    <%- include('partials/header') %> <!-- Thêm header -->
+
+    <main>
+        <article>
+            <h1><%= news.title %></h1>
+            <p><strong>Category:</strong> <%= news.category.name %></p>
+            <p><strong>Author:</strong> <%= news.author.username %></p>
+            <p><strong>Published on:</strong> <%= news.publishedDate.toDateString() %></p> <!-- Ngày xuất bản -->
+            
+            <% if (news.image) { %>
+                <img src="<%= news.image %>" alt="<%= news.title %>" style="max-width: 300px; height: auto;">
+                <% } %>
+
+            <p><%= news.content %></p>
+        </article>
+        <a href="/news" class="btn">Back to News</a> <!-- Nút quay lại -->
+    </main>
+
+    <%- include('partials/footer') %> <!-- Thêm footer -->
 </body>
 </html>
