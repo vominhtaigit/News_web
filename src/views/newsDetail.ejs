@@ -1,30 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= news.title %></title>
-    <link rel="stylesheet" href="/styles/main.css"> <!-- Liên kết đến CSS -->
+    <title>
+        <%= news.title %>
+    </title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .article-image {
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .article-content {
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+        
+        .meta-info {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-<body>
-    <%- include('partials/header') %> <!-- Thêm header -->
 
-    <main>
-        <article>
-            <h1><%= news.title %></h1>
-            <p><strong>Category:</strong> <%= news.category.name %></p>
-            <p><strong>Author:</strong> <%= news.author.username %></p>
-            <p><strong>Published on:</strong> <%= news.publishedDate.toDateString() %></p> <!-- Ngày xuất bản -->
-            
-            <% if (news.image) { %>
-                <img src="<%= news.image %>" alt="<%= news.title %>" style="max-width: 300px; height: auto;">
-                <% } %>
+<body class="bg-light">
+    <%- include('partials/header') %>
 
-            <p><%= news.content %></p>
-        </article>
-        <a href="/news" class="btn">Back to News</a> <!-- Nút quay lại -->
-    </main>
+        <main class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <article class="card shadow-sm">
+                        <% if (news.image) { %>
+                            <img src="<%= news.image %>" class="card-img-top article-image" alt="<%= news.title %>">
+                            <% } %>
 
-    <%- include('partials/footer') %> <!-- Thêm footer -->
+                                <div class="card-body p-4">
+                                    <h1 class="card-title mb-4">
+                                        <%= news.title %>
+                                    </h1>
+
+                                    <div class="meta-info d-flex align-items-center mb-4">
+                                        <div class="me-4">
+                                            <i class="fas fa-folder me-2"></i>
+                                            <%= news.category.name %>
+                                        </div>
+                                        <div class="me-4">
+                                            <i class="fas fa-user me-2"></i>
+                                            <%= news.author.username %>
+                                        </div>
+                                        <div>
+                                            <i class="far fa-calendar-alt me-2"></i>
+                                            <%= new Date(news.publishedDate).toLocaleDateString() %>
+                                        </div>
+                                    </div>
+
+                                    <div class="article-content mb-4">
+                                        <%= news.content %>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-4">
+
+                                        <a href="/" class="btn btn-outline-primary">
+                                            <i class="fas fa-arrow-left me-2"></i>Back to News
+                                        </a>
+                                    </div>
+                                </div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <%- include('partials/footer') %>
+
+            <!-- Bootstrap Bundle with Popper -->
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -10,6 +10,7 @@ import {
     renderEditNewsPage,
 } from '../controllers/newsController.js'; // Remove `upload` from here
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
+import { getNews } from '../controllers/newsController.js';
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.post('/update/:id', isAuthenticated, upload.single('image'), updateNews);
 
 // Delete route
 router.delete('/:id', isAuthenticated, deleteNews);
+router.get('/', getNews);
 
 export default router;

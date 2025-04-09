@@ -1,7 +1,7 @@
 import User from '../models/userModel.js';
 import passport from 'passport';
 
-export const register = async (req, res) => {
+export const register = async(req, res) => {
     const { username, email, password } = req.body;
     try {
         const user = new User({ username, email, password });
@@ -30,6 +30,13 @@ export const logout = (req, res) => {
     });
 };
 
-export const renderRegisterPage = (req, res) => {
-    res.render('auth/register', { user: req.user }); // Adjust path to match the file location
+export const renderRegisterPage = async(req, res) => {
+    try {
+        res.render('auth/register', {
+            error: null, // Pass null as default value
+            user: req.user
+        });
+    } catch (err) {
+        res.status(500).send('Error rendering register page: ' + err.message);
+    }
 };
