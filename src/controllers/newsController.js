@@ -49,12 +49,29 @@ export const getAllNews = async(req, res) => {
     }
 };
 
-export const getNewsById = async(req, res) => {
+export const getNewsById = async (req, res) => {
     try {
-        const news = await News.findById(req.params.id).populate('category').populate('author');
-        if (!news) return res.status(404).send('News not found');
+        console.log('Fetching news with ID:', req.params.id);
+        // Remove the disabled filter for admin users
+        const news = await News.findById(req.params.id)
+            .populate('category')
+            .populate('author');
+
+        if (!news) {
+            console.log('News not found');
+            return res.status(404).send('News not found');
+        }
+
+        // Only check disabled status after finding the news
+        if (news.disabled && (!req.user || req.user.role !== 'admin')) {
+            console.log('News is disabled and user is not admin');
+            return res.status(404).send('News not found');
+        }
+
+        console.log('News found:', news);
         res.render('newsDetail', { news });
     } catch (err) {
+        console.error('Error fetching news:', err);
         res.status(500).send('Error fetching news: ' + err.message);
     }
 };
@@ -177,5 +194,21 @@ export const toggleDisableNews = async(req, res) => {
         res.redirect('/admin');
     } catch (err) {
         res.status(500).send('Error toggling news status: ' + err.message);
+    }
+};
+
+export const getNewsByCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const category = await Category.findById(categoryId);
+        if (!category) return res.status(404).send('Category not found');
+
+        const news = await News.find({ category: categoryId, disabled: { $ne: true } })
+            .populate('author', 'username')
+            .sort({ createdAt: -1 });
+
+        res.render('newsbycategory', { category, news });
+    } catch (err) {
+        res.status(500).send('Error fetching news by category: ' + err.message);
     }
 };

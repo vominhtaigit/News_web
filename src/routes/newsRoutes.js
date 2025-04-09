@@ -9,6 +9,7 @@ import {
     renderCreateNewsPage,
     renderEditNewsPage,
     toggleDisableNews,
+    getNewsByCategory,
 } from '../controllers/newsController.js'; // Remove `upload` from here
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 import { getNews } from '../controllers/newsController.js';
@@ -30,6 +31,10 @@ router.get('/edit/:id', isAuthenticated, renderEditNewsPage);
 
 // Public routes
 router.get('/', getAllNews);
+
+// Route for fetching news by category
+router.get('/category/:categoryId', getNewsByCategory);
+
 router.get('/:id', getNewsById);
 
 // Update route should use POST instead of PUT for form submission
