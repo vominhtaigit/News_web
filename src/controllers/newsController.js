@@ -5,19 +5,19 @@ import path from 'path';
 import fs from 'fs';
 
 // Setup multer storage
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        const uploadDir = 'public/images';
-        // Create directory if it doesn't exist
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-    },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
+// const storage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         const uploadDir = 'public/images';
+//         // Create directory if it doesn't exist
+//         if (!fs.existsSync(uploadDir)) {
+//             fs.mkdirSync(uploadDir, { recursive: true });
+//         }
+//         cb(null, uploadDir);
+//     },
+//     filename: function(req, file, cb) {
+//         cb(null, Date.now() + path.extname(file.originalname));
+//     }
+// });
 
 // Create the multer instance but don't export directly
 const uploadMiddleware = multer({
@@ -97,7 +97,7 @@ export const updateNews = async(req, res) => {
 
         // Add image to update data if a new file was uploaded
         if (req.file) {
-            updateData.image = `/images/${req.file.filename}`;
+            updateData.image = `/uploads/${req.file.filename}`;
         }
 
         const news = await News.findByIdAndUpdate(
