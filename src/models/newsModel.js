@@ -7,7 +7,7 @@ const newsSchema = new mongoose.Schema({
     author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false }, // Không bắt buộc
     publishedDate: { type: Date, default: Date.now },
     image: { type: String, required: false }, // Thêm trường ảnh
-
+    disabled: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
 });
 

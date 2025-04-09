@@ -5,19 +5,19 @@ import path from 'path';
 import fs from 'fs';
 
 // Setup multer storage
-// const storage = multer.diskStorage({
-//     destination: function(req, file, cb) {
-//         const uploadDir = 'public/images';
-//         // Create directory if it doesn't exist
-//         if (!fs.existsSync(uploadDir)) {
-//             fs.mkdirSync(uploadDir, { recursive: true });
-//         }
-//         cb(null, uploadDir);
-//     },
-//     filename: function(req, file, cb) {
-//         cb(null, Date.now() + path.extname(file.originalname));
-//     }
-// });
+ const storage = multer.diskStorage({
+     destination: function(req, file, cb) {
+         const uploadDir = 'public/images';
+         // Create directory if it doesn't exist
+         if (!fs.existsSync(uploadDir)) {
+             fs.mkdirSync(uploadDir, { recursive: true });
+         }
+         cb(null, uploadDir);
+     },
+     filename: function(req, file, cb) {
+         cb(null, Date.now() + path.extname(file.originalname));
+     }
+ });
 
 // Create the multer instance but don't export directly
 const uploadMiddleware = multer({
@@ -38,8 +38,12 @@ export const upload = uploadMiddleware;
 
 export const getAllNews = async(req, res) => {
     try {
-        const news = await News.find().populate('category'); // Bỏ populate('author')
-        res.render('news', { news }); // Render view 'news.ejs'
+        // Only show disabled news to admins
+        const filter = req.user?.role === 'admin' ? {} : { disabled: { $ne: true } };
+        const news = await News.find(filter)
+            .populate('category')
+            .populate('author');
+        res.render('news', { news }); 
     } catch (err) {
         res.status(500).send('Error fetching news: ' + err.message);
     }
@@ -144,7 +148,9 @@ export const renderAdminPage = async(req, res) => {
 
 export const getNews = async(req, res) => {
     try {
-        const news = await News.find()
+        // Only show disabled news to admins
+        const filter = req.user?.role === 'admin' ? {} : { disabled: { $ne: true } };
+        const news = await News.find(filter)
             .populate('category')
             .populate('author', 'username')
             .sort({ createdAt: -1 });
@@ -156,9 +162,20 @@ export const getNews = async(req, res) => {
         });
     } catch (error) {
         console.error('Error fetching news:', error);
-        res.status(500).render('error', {
-            message: 'Error loading news articles',
-            error: error
-        });
+        res.status(500).render('error', { message: 'Error loading news articles', error });
+    }
+};
+
+export const toggleDisableNews = async(req, res) => {
+    try {
+        const news = await News.findById(req.params.id);
+        if (!news) return res.status(404).send('News not found');
+        
+        news.disabled = !news.disabled;
+        await news.save();
+        
+        res.redirect('/admin');
+    } catch (err) {
+        res.status(500).send('Error toggling news status: ' + err.message);
     }
 };

@@ -20,36 +20,38 @@
                     <% if (news && news.length > 0) { %>
                         <div class="row row-cols-1 row-cols-md-2 g-4">
                             <% news.forEach(article => { %>
-                                <div class="col">
-                                    <div class="card h-100 shadow-sm">
-                                        <% if (article.image) { %>
-                                            <img src="<%= article.image %>" class="card-img-top" alt="<%= article.title %>" style="height: 200px; object-fit: cover;">
-                                            <% } %>
-                                                <div class="card-body">
-                                                    <h2 class="card-title h5 mb-2">
-                                                        <a href="/news/<%= article._id %>" class="text-decoration-none text-dark">
-                                                            <%= article.title %>
-                                                        </a>
-                                                    </h2>
-                                                    <div class="meta-info mb-3">
-                                                        <small class="text-muted">
-                                                <i class="fas fa-folder me-2"></i>
-                                                <%= article.category ? article.category.name : 'Uncategorized' %>
-                                                <span class="mx-2">•</span>
-                                                <i class="fas fa-user me-2"></i>
-                                                <%= article.author ? article.author.username : 'Unknown' %>
-                                            </small>
+                                <% if (!article.disabled || (typeof user !== 'undefined' && user?.role === 'admin')) { %>
+                                    <div class="col">
+                                        <div class="card h-100 shadow-sm">
+                                            <% if (article.image) { %>
+                                                <img src="<%= article.image %>" class="card-img-top" alt="<%= article.title %>" style="height: 200px; object-fit: cover;">
+                                                <% } %>
+                                                    <div class="card-body">
+                                                        <h2 class="card-title h5 mb-2">
+                                                            <a href="/news/<%= article._id %>" class="text-decoration-none text-dark">
+                                                                <%= article.title %>
+                                                            </a>
+                                                        </h2>
+                                                        <div class="meta-info mb-3">
+                                                            <small class="text-muted">
+                                                    <i class="fas fa-folder me-2"></i>
+                                                    <%= article.category ? article.category.name : 'Uncategorized' %>
+                                                    <span class="mx-2">•</span>
+                                                    <i class="fas fa-user me-2"></i>
+                                                    <%= article.author ? article.author.username : 'Unknown' %>
+                                                </small>
+                                                        </div>
+                                                        <p class="card-text text-muted">
+                                                            <%= article.content.substring(0, 100) %>...
+                                                        </p>
+                                                        <a href="/news/<%= article._id %>" class="btn btn-primary btn-sm">
+                                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
                                                     </div>
-                                                    <p class="card-text text-muted">
-                                                        <%= article.content.substring(0, 100) %>...
-                                                    </p>
-                                                    <a href="/news/<%= article._id %>" class="btn btn-primary btn-sm">
-                                            Read More <i class="fas fa-arrow-right ms-1"></i>
-                                        </a>
-                                                </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <% }) %>
+                                <% } %>
+                            <% }) %>
                         </div>
 
                         <% if (typeof user !== 'undefined' && user) { %>

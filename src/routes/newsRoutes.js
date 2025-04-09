@@ -8,9 +8,11 @@ import {
     deleteNews,
     renderCreateNewsPage,
     renderEditNewsPage,
+    toggleDisableNews,
 } from '../controllers/newsController.js'; // Remove `upload` from here
 import { isAuthenticated } from '../middlewares/authMiddleware.js';
 import { getNews } from '../controllers/newsController.js';
+import { isAdmin } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
@@ -32,6 +34,9 @@ router.get('/:id', getNewsById);
 
 // Update route should use POST instead of PUT for form submission
 router.post('/update/:id', isAuthenticated, upload.single('image'), updateNews);
+
+// Add toggle disable route
+router.post('/:id/toggle-disable', isAuthenticated, isAdmin, toggleDisableNews);
 
 // Delete route
 router.delete('/:id', isAuthenticated, deleteNews);
