@@ -1,40 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News</title>
-    <link rel="stylesheet" href="/styles/main.css">
+    <title>News Articles</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
-<body>
-    <header>
-        <h1>Latest News</h1>
-    </header>
-    <main>
-        <section id="news-list">
-            <% if (news && news.length > 0) { %>
-                <ul>
-                    <% news.forEach((article) => { %>
-                        <li>
-                            <h2><%= article.title %></h2>
-                            <% if (article.image) { %>
-                                <img src="<%= article.image %>" alt="<%= article.title %>" style="max-width: 200px; height: auto;">
+
+<body class="bg-light">
+    <%- include('partials/header') %>
+
+        <main class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <% if (news && news.length > 0) { %>
+                        <div class="row row-cols-1 row-cols-md-2 g-4">
+                            <% news.forEach(article => { %>
+                                <% if (!article.disabled || (typeof user !== 'undefined' && user?.role === 'admin')) { %>
+                                    <div class="col">
+                                        <div class="card h-100 shadow-sm">
+                                            <% if (article.image) { %>
+                                                <img src="<%= article.image %>" class="card-img-top" alt="<%= article.title %>" style="height: 200px; object-fit: cover;">
+                                                <% } %>
+                                                    <div class="card-body">
+                                                        <h2 class="card-title h5 mb-2">
+                                                            <a href="/news/<%= article._id %>" class="text-decoration-none text-dark">
+                                                                <%= article.title %>
+                                                            </a>
+                                                        </h2>
+                                                        <div class="meta-info mb-3">
+                                                            <small class="text-muted">
+                                                    <i class="fas fa-folder me-2"></i>
+                                                    <%= article.category ? article.category.name : 'Uncategorized' %>
+                                                    <span class="mx-2">•</span>
+                                                    <i class="fas fa-user me-2"></i>
+                                                    <%= article.author ? article.author.username : 'Unknown' %>
+                                                </small>
+                                                        </div>
+                                                        <p class="card-text text-muted">
+                                                            <%= article.content.substring(0, 100) %>...
+                                                        </p>
+                                                        <a href="/news/<%= article._id %>" class="btn btn-primary btn-sm">
+                                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                                    </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        </div>
+
+                        <% if (typeof user !== 'undefined' && user) { %>
+                            <div class="text-center mt-4">
+                                <a href="/news/create" class="btn btn-success">
+                                    <i class="fas fa-plus-circle me-2"></i>Create New Article
+                                </a>
+                            </div>
                             <% } %>
-                            <p><%= article.content.substring(0, 100) %>...</p>
-                            <p>Category: <%= article.category ? article.category.name : 'Uncategorized' %></p>
-                            <p>Author: <%= article.author ? article.author.username : 'Unknown' %></p>
-                        </li>
-                    <% }) %>
-                </ul>
-                <br>
-                <a href="/news/create">Create New News</a>
-            <% } else { %>
-                <p>No news articles available at the moment.</p>
-            <% } %>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; <%= new Date().getFullYear() %> News Web Project</p>
-    </footer>
+                                <% } else { %>
+                                    <div class="alert alert-info text-center">
+                                        No news articles available at the moment.
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
+        </main>
+
+        <%- include('partials/footer') %>
+
+            <!-- Bootstrap JS Bundle -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
