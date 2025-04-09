@@ -2,46 +2,63 @@ import Category from '../models/categoryModel.js';
 import News from '../models/newsModel.js';
 import Fuse from 'fuse.js';
 
+let cachedNews = null;
+let cacheTimestamp = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 phút
+
 export const renderHomePage = async (req, res) => {
-    const q = req.query.q; // Lấy từ khóa tìm kiếm từ query string
+    const q = req.query.q;
     try {
         const categories = await Category.find();
-        let news = await News.find().sort({ createdAt: -1 }); // Lấy tất cả bài viết
+
+        const now = Date.now();
+        let news;
+
+        console.time(' News Query Time');
+
+        if (!cachedNews || now - cacheTimestamp > CACHE_DURATION) {
+            cachedNews = await News.find().sort({ createdAt: -1 }).limit(10);
+            cacheTimestamp = now;
+            console.log('[Cache] Tin tức từ DATABASE.');
+        } else {
+            console.log('[Cache] Tin tức từ CACHE.');
+        }
+
+        news = cachedNews;
+
+        console.timeEnd('🕒 News Query Time');
 
         if (q) {
-            // Tách từ khóa thành các từ riêng lẻ
             const keywords = q.split(' ');
-
-            // Cấu hình Fuse.js
             const options = {
-                keys: ['title', 'content'], // Tìm kiếm theo tiêu đề và nội dung
-                threshold: 0.4, // Độ chính xác (càng thấp càng chính xác)
-                includeScore: true, // Bao gồm điểm số trong kết quả
+                keys: ['title', 'content'],
+                threshold: 0.2,
+                includeScore: true,
             };
 
-            const fuse = new Fuse(news, options); // Khởi tạo Fuse.js với dữ liệu bài viết
+            const fuse = new Fuse(news, options);
             let results = [];
 
-            // Tìm kiếm từng từ khóa và hợp nhất kết quả
             keywords.forEach(keyword => {
                 const result = fuse.search(keyword);
                 results = [...results, ...result];
             });
 
-            // Loại bỏ các kết quả trùng lặp
             const uniqueResults = Array.from(new Set(results.map(item => item.item._id)))
                 .map(id => results.find(item => item.item._id === id).item);
 
-            news = uniqueResults; // Gán kết quả tìm kiếm vào danh sách bài viết
+            news = uniqueResults;
         }
 
         res.render('index', {
             categories,
             news,
             user: req.user || null,
-            q, // Truyền từ khóa tìm kiếm vào view
+            q,
         });
+
     } catch (err) {
+        console.error('[Error] Home page render failed:', err);
         res.status(500).send('Error loading home page: ' + err.message);
     }
 };
