@@ -3,6 +3,7 @@ import Category from '../models/categoryModel.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { updateNewsCache } from './HomeController.js';
 
 // Setup multer storage
  const storage = multer.diskStorage({
@@ -33,16 +34,16 @@ const uploadMiddleware = multer({
     }
 });
 
-// Export a wrapped version of the middleware
+
 export const upload = uploadMiddleware;
 
 export const getAllNews = async(req, res) => {
     try {
-        // Only show disabled news to admins
         const filter = req.user?.role === 'admin' ? {} : { disabled: { $ne: true } };
         const news = await News.find(filter)
             .populate('category')
-            .populate('author');
+            .populate('author')
+            .sort({ createdAt: -1 }); 
         res.render('news', { news }); 
     } catch (err) {
         res.status(500).send('Error fetching news: ' + err.message);
@@ -76,18 +77,22 @@ export const getNewsById = async (req, res) => {
     }
 };
 
-export const createNews = async(req, res) => {
+export const createNews = async (req, res) => {
     const { title, content, category } = req.body;
     try {
         const news = new News({
             title,
             content,
             category,
-            author: req.user._id, // Automatically set the author
-            image: req.file ? `/uploads/${req.file.filename}` : null // Update image path to use /uploads
+            author: req.user._id,
+            image: req.file ? `/uploads/${req.file.filename}` : null,
         });
         await news.save();
-        res.redirect('/news'); // Chuyển hướng đến danh sách tin tức
+
+        // Cập nhật lại cache
+        await updateNewsCache();
+
+        res.redirect('/news');
     } catch (err) {
         res.status(400).send('Error creating news: ' + err.message);
     }
@@ -106,33 +111,31 @@ export const renderEditNewsPage = async(req, res) => {
     }
 };
 
-export const updateNews = async(req, res) => {
+export const updateNews = async (req, res) => {
     const { title, content, category } = req.body;
     try {
         const updateData = {
             title,
             content,
             category,
-            updatedAt: Date.now()
+            updatedAt: Date.now(),
         };
 
-        // Add image to update data if a new file was uploaded
         if (req.file) {
             updateData.image = `/uploads/${req.file.filename}`;
         }
 
-        const news = await News.findByIdAndUpdate(
-            req.params.id,
-            updateData, { new: true }
-        );
+        const news = await News.findByIdAndUpdate(req.params.id, updateData, { new: true });
 
         if (!news) return res.status(404).send('News not found');
+
+        await updateNewsCache();
+
         res.redirect('/admin');
     } catch (err) {
         res.status(400).send('Error updating news: ' + err.message);
     }
 };
-
 
 export const deleteNews = async(req, res) => {
     try {
@@ -146,7 +149,7 @@ export const deleteNews = async(req, res) => {
 
 export const renderCreateNewsPage = async(req, res) => {
     try {
-        const categories = await Category.find(); // Fetch categories for the form
+        const categories = await Category.find(); 
         res.render('createNews', { categories });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
@@ -165,7 +168,6 @@ export const renderAdminPage = async(req, res) => {
 
 export const getNews = async(req, res) => {
     try {
-        // Only show disabled news to admins
         const filter = req.user?.role === 'admin' ? {} : { disabled: { $ne: true } };
         const news = await News.find(filter)
             .populate('category')
