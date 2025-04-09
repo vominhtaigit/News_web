@@ -8,7 +8,7 @@ const CACHE_DURATION = 5 * 60 * 1000;
 
 export const updateNewsCache = async () => {
     try {
-        cachedNews = await News.find().sort({ createdAt: -1 }).limit(11); 
+        cachedNews = await News.find().sort({ createdAt: -1 }).limit(10); 
         cacheTimestamp = Date.now(); 
         console.log('[Cache] Cache đã được cập nhật.');
     } catch (err) {
