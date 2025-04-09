@@ -11,4 +11,6 @@ const newsSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
+newsSchema.index({ title: 'text', content: 'text' }); // Tạo chỉ mục full-text
+
 export default mongoose.model('News', newsSchema);

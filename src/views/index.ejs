@@ -59,10 +59,17 @@
 
 <body>
     <%- include('partials/header') %>
+    
         <main class="container py-5">
             <section class="row justify-content-center">
                 <div class="col-md-10">
                     <h2 class="text-center mb-4">Tin Tức Mới Nhất</h2>
+                    <form action="/" method="GET" class="mb-4">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Tìm kiếm bài viết..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+                            <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                        </div>
+                    </form>
                     <% if (news && news.length > 0) { %>
                         <div class="row row-cols-1 row-cols-md-2 g-4">
                             <% news.forEach(article => { %>

@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';  // Import hàm fileURLToPath từ 'url'
 import newsRoutes from './routes/newsRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import News from './models/newsModel.js'; // Đảm bảo bạn đã import model News
 
 import authRoutes from './routes/authRoutes.js';
 import adminRoutes from './routes/adminRoutes.js'; // Add admin routes import
