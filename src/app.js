@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import path from 'path';
-import { fileURLToPath } from 'url';  // Import hàm fileURLToPath từ 'url'
+import { fileURLToPath } from 'url'; // Import hàm fileURLToPath từ 'url'
 import newsRoutes from './routes/newsRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import News from './models/newsModel.js'; // Đảm bảo bạn đã import model News
@@ -14,12 +14,14 @@ import session from 'express-session';
 import passport from '../config/passportConfig.js'; // Corrected path
 import { renderHomePage } from './controllers/HomeController.js'; // Corrected path
 import Category from './models/categoryModel.js'; // Add this import
+import { globalVariables } from './middlewares/globalVariables.js';
 
 // Load environment variables
 dotenv.config();
 
 // Định nghĩa __filename và __dirname trong ES module
-const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(
+    import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Entry point for the News Web Project
@@ -53,7 +55,9 @@ app.use(
 // Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(globalVariables);
+app.use('/news', newsRoutes);
+app.use('/categories', categoryRoutes);
 // Kết nối với MongoDB
 mongoose
     .connect(MONGO_URI, {

@@ -1,6 +1,6 @@
 import Category from '../models/categoryModel.js'; // Adjust path if necessary
 
-export const getAllCategories = async (req, res) => {
+export const getAllCategories = async(req, res) => {
     try {
         const categories = await Category.find();
         res.render('categories', { categories });
@@ -9,7 +9,7 @@ export const getAllCategories = async (req, res) => {
     }
 };
 
-export const createCategory = async (req, res) => {
+export const createCategory = async(req, res) => {
     const { name, description } = req.body;
     try {
         const category = new Category({ name, description });
@@ -20,7 +20,7 @@ export const createCategory = async (req, res) => {
     }
 };
 
-export const deleteCategory = async (req, res) => {
+export const deleteCategory = async(req, res) => {
     try {
         const category = await Category.findByIdAndDelete(req.params.id);
         if (!category) return res.status(404).send('Category not found');
@@ -30,13 +30,11 @@ export const deleteCategory = async (req, res) => {
     }
 };
 
-export const updateCategory = async (req, res) => {
+export const updateCategory = async(req, res) => {
     const { name, description } = req.body;
     try {
         const category = await Category.findByIdAndUpdate(
-            req.params.id,
-            { name, description, updatedAt: Date.now() },
-            { new: true }
+            req.params.id, { name, description, updatedAt: Date.now() }, { new: true }
         );
         if (!category) return res.status(404).send('Category not found');
         res.redirect('/admin'); // Redirect back to admin page after update
@@ -49,7 +47,7 @@ export const renderCreateCategoryPage = (req, res) => {
     res.render('createCategories', { user: req.user });
 };
 
-export const renderCreateNewsPage = async (req, res) => {
+export const renderCreateNewsPage = async(req, res) => {
     try {
         console.log(Category); // Check if Category is defined
         const categories = await Category.find(); // Fetch categories for the form
@@ -59,7 +57,7 @@ export const renderCreateNewsPage = async (req, res) => {
     }
 };
 
-export const renderEditCategoryPage = async (req, res) => {
+export const renderEditCategoryPage = async(req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (!category) {
