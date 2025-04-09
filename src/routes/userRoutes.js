@@ -10,7 +10,7 @@ import { isAdmin } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-// Admin routes (protected)
+
 router.get('/', isAuthenticated, isAdmin, getAllUsers);
 router.get('/:id', isAuthenticated, isAdmin, getUserById);
 router.put('/:id', isAuthenticated, isAdmin, updateUser);

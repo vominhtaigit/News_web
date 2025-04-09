@@ -4,12 +4,12 @@ import Fuse from 'fuse.js';
 
 let cachedNews = null;
 let cacheTimestamp = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 phút
+const CACHE_DURATION = 5 * 60 * 1000; 
 
 export const updateNewsCache = async () => {
     try {
-        cachedNews = await News.find().sort({ createdAt: -1 }).limit(11); // Lấy 10 tin mới nhất
-        cacheTimestamp = Date.now(); // Cập nhật thời gian cache
+        cachedNews = await News.find().sort({ createdAt: -1 }).limit(11); 
+        cacheTimestamp = Date.now(); 
         console.log('[Cache] Cache đã được cập nhật.');
     } catch (err) {
         console.error('[Error] Không thể cập nhật cache:', err.message);
@@ -24,7 +24,7 @@ export const renderHomePage = async (req, res) => {
         const now = Date.now();
         let news;
 
-        console.time('🕒 News Query Time');
+        console.time(' News Query Time');
 
         if (!cachedNews || now - cacheTimestamp > CACHE_DURATION) {
             await updateNewsCache();
@@ -34,7 +34,7 @@ export const renderHomePage = async (req, res) => {
 
         news = cachedNews;
 
-        console.timeEnd('🕒 News Query Time');
+        console.timeEnd(' News Query Time');
 
         if (q) {
             const keywords = q.split(' ');

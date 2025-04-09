@@ -6,7 +6,7 @@ export const register = async(req, res) => {
     try {
         const user = new User({ username, email, password });
         await user.save();
-        res.redirect('/auth/login'); // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
+        res.redirect('/auth/login'); 
     } catch (err) {
         res.status(400).send('Error registering user: ' + err.message);
     }
@@ -18,7 +18,7 @@ export const login = (req, res, next) => {
         if (!user) return res.redirect('/auth/login?error=Invalid credentials');
         req.logIn(user, (err) => {
             if (err) return next(err);
-            res.redirect('/'); // Chuyển hướng đến trang chủ sau khi đăng nhập thành công
+            res.redirect('/'); 
         });
     })(req, res, next);
 };
@@ -26,14 +26,14 @@ export const login = (req, res, next) => {
 export const logout = (req, res) => {
     req.logout((err) => {
         if (err) return res.status(500).send('Error logging out');
-        res.redirect('/auth/login'); // Chuyển hướng đến trang đăng nhập sau khi đăng xuất
+        res.redirect('/auth/login'); 
     });
 };
 
 export const renderRegisterPage = async(req, res) => {
     try {
         res.render('auth/register', {
-            error: null, // Pass null as default value
+            error: null, 
             user: req.user
         });
     } catch (err) {

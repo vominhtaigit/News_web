@@ -1,4 +1,4 @@
-import Category from '../models/categoryModel.js'; // Adjust path if necessary
+import Category from '../models/categoryModel.js'; 
 
 export const getAllCategories = async(req, res) => {
     try {
@@ -49,8 +49,8 @@ export const renderCreateCategoryPage = (req, res) => {
 
 export const renderCreateNewsPage = async(req, res) => {
     try {
-        console.log(Category); // Check if Category is defined
-        const categories = await Category.find(); // Fetch categories for the form
+     //   console.log(Category);
+        const categories = await Category.find(); 
         res.render('createNews', { categories, user: req.user });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
@@ -63,7 +63,7 @@ export const renderEditCategoryPage = async(req, res) => {
         if (!category) {
             return res.status(404).send('Category not found');
         }
-        res.render('updateCategory', { category }); // Change from editCategory to updateCategory
+        res.render('updateCategory', { category }); 
     } catch (err) {
         res.status(500).send('Error fetching category: ' + err.message);
     }

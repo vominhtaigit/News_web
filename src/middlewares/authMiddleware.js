@@ -18,7 +18,6 @@ const authMiddleware = (req, res, next) => {
 
 export default authMiddleware;
 
-// Middleware giả để bỏ qua kiểm tra đăng nhập
 export const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         console.log('User authenticated:', req.user);

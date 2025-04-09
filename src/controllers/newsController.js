@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import { updateNewsCache } from './HomeController.js';
 
-// Setup multer storage
+
  const storage = multer.diskStorage({
      destination: function(req, file, cb) {
          const uploadDir = 'public/images';
@@ -52,8 +52,7 @@ export const getAllNews = async(req, res) => {
 
 export const getNewsById = async (req, res) => {
     try {
-        console.log('Fetching news with ID:', req.params.id);
-        // Remove the disabled filter for admin users
+ //       console.log('Fetching news with ID:', req.params.id);
         const news = await News.findById(req.params.id)
             .populate('category')
             .populate('author');
@@ -63,7 +62,6 @@ export const getNewsById = async (req, res) => {
             return res.status(404).send('News not found');
         }
 
-        // Only check disabled status after finding the news
         if (news.disabled && (!req.user || req.user.role !== 'admin')) {
             console.log('News is disabled and user is not admin');
             return res.status(404).send('News not found');
@@ -89,7 +87,6 @@ export const createNews = async (req, res) => {
         });
         await news.save();
 
-        // Cập nhật lại cache
         await updateNewsCache();
 
         res.redirect('/news');
