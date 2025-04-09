@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Articles</title>
+    <title>Tin Tức</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -35,35 +35,35 @@
                                                         <div class="meta-info mb-3">
                                                             <small class="text-muted">
                                                     <i class="fas fa-folder me-2"></i>
-                                                    <%= article.category ? article.category.name : 'Uncategorized' %>
+                                                    <%= article.category ? article.category.name : 'Chưa phân loại' %>
                                                     <span class="mx-2">•</span>
                                                     <i class="fas fa-user me-2"></i>
-                                                    <%= article.author ? article.author.username : 'Unknown' %>
+                                                    <%= article.author ? article.author.username : 'Không rõ' %>
                                                 </small>
                                                         </div>
                                                         <p class="card-text text-muted">
                                                             <%= article.content.substring(0, 100) %>...
                                                         </p>
                                                         <a href="/news/<%= article._id %>" class="btn btn-primary btn-sm">
-                                                Read More <i class="fas fa-arrow-right ms-1"></i>
+                                                Xem thêm <i class="fas fa-arrow-right ms-1"></i>
                                             </a>
                                                     </div>
                                         </div>
                                     </div>
-                                <% } %>
-                            <% }) %>
+                                    <% } %>
+                                        <% }) %>
                         </div>
 
                         <% if (typeof user !== 'undefined' && user) { %>
                             <div class="text-center mt-4">
                                 <a href="/news/create" class="btn btn-success">
-                                    <i class="fas fa-plus-circle me-2"></i>Create New Article
+                                    <i class="fas fa-plus-circle me-2"></i>Viết Bài Mới
                                 </a>
                             </div>
                             <% } %>
                                 <% } else { %>
                                     <div class="alert alert-info text-center">
-                                        No news articles available at the moment.
+                                        Hiện tại chưa có bài viết nào.
                                     </div>
                                     <% } %>
                 </div>
