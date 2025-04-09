@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="/">Trang chủ</a>
                     </li>
                     <% if (typeof categories !== 'undefined') { %>
                         <% categories.forEach(category => { %>
@@ -50,46 +50,41 @@
 
                 <div class="d-flex align-items-center">
                     <% if (typeof user !== 'undefined' && user) { %>
-                        <!-- Add Post Button -->
-
-
-                        <!-- User Menu Items -->
+                        <!-- Mục của người dùng đã đăng nhập -->
                         <div class="navbar-nav">
 
                             <% if (user.role === 'admin') { %>
                                 <a class="nav-link me-3" href="/admin">
                                     <i class="fas fa-cog me-2"></i>Admin
                                 </a>
-
                                 <% } %>
 
                                     <a class="nav-link me-3" href="/news">
-                                        <i class="fas fa-newspaper me-2"></i>My Articles
+                                        <i class="fas fa-newspaper me-2"></i>My News
                                     </a>
                                     <a href="/news/create" class="btn btn-success me-3">
-                                        <i class="fas fa-plus-circle me-2"></i>Add Post
+                                        <i class="fas fa-plus-circle me-2"></i>Đăng bài
                                     </a>
-                                    <% if (user.role === 'admin') { %>
 
+                                    <% if (user.role === 'admin') { %>
                                         <a href="/auth/register" class="btn btn-success me-3">
                                             <i class="fas fa-plus-circle me-2"></i>Đăng ký
                                         </a>
                                         <% } %>
-                                            <a href="/auth/logout" class="btn btn-danger me-3">
-                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                            </a>
 
+                                            <a href="/auth/logout" class="btn btn-danger me-3">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                            </a>
                         </div>
                         <% } else { %>
-                            <a href="/auth/login" class="btn btn-outline-light me-2">Login</a>
-                            <a href="/auth/register" class="btn btn-light">Register</a>
+                            <a href="/auth/login" class="btn btn-outline-light me-2">Đăng nhập</a>
                             <% } %>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Bootstrap JS and Popper.js -->
+    <!-- Bootstrap JS và Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>

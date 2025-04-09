@@ -9,20 +9,21 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1>Update News</h1>
-        <form action="/news/update/<%= news._id %>" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title:</label>
-                <input type="text" class="form-control" name="title" id="title" value="<%= news.title %>" required>
-            </div>
-            <div class="mb-3">
-                <label for="content" class="form-label">Content:</label>
-                <textarea class="form-control" name="content" id="content" required><%= news.content %></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">Category:</label>
-                <select class="form-control" name="category" id="category" required>
+    <%- include('partials/header') %>
+        <div class="container mt-5">
+            <h1>Update News</h1>
+            <form action="/news/update/<%= news._id %>" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" class="form-control" name="title" id="title" value="<%= news.title %>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Content:</label>
+                    <textarea class="form-control" name="content" id="content" required><%= news.content %></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category:</label>
+                    <select class="form-control" name="category" id="category" required>
                     <% categories.forEach(category => { %>
                         <option value="<%= category._id %>" 
                             <%= news.category._id.toString() === category._id.toString() ? 'selected' : '' %>>
@@ -30,18 +31,19 @@
                         </option>
                     <% }); %>
                 </select>
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label">Image:</label>
-                <input type="file" class="form-control" name="image" id="image" accept="image/*">
-                <% if (news.image) { %>
-                    <img src="<%= news.image %>" alt="Current image" class="mt-2" style="max-width: 200px;">
-                    <% } %>
-            </div>
-            <button type="submit" class="btn btn-primary">Update News</button>
-            <a href="/admin" class="btn btn-secondary">Back to Admin</a>
-        </form>
-    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image:</label>
+                    <input type="file" class="form-control" name="image" id="image" accept="image/*">
+                    <% if (news.image) { %>
+                        <img src="<%= news.image %>" alt="Current image" class="mt-2" style="max-width: 200px;">
+                        <% } %>
+                </div>
+                <button type="submit" class="btn btn-primary">Update News</button>
+                <a href="/admin" class="btn btn-secondary">Back to Admin</a>
+            </form>
+        </div>
+        <%- include('partials/footer') %>
 </body>
 
 </html>
