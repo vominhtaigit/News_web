@@ -77,23 +77,52 @@ export const getNewsById = async (req, res) => {
 
 export const createNews = async (req, res) => {
     const { title, content, category } = req.body;
+    const errors = {};
+
     try {
+        if (!req.file) {
+            errors.image = 'Image is required.';
+        }
+
+        const existingNews = await News.findOne({ title });
+        if (existingNews) {
+            errors.title = 'Tiêu đề đã tồn tại. Vui lòng chọn một tiêu đề khác.';
+        }
+
+        if (content.split(/\s+/).length < 500) {
+            errors.content = 'Nội dung phải có ít nhất 500 từ.';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            const categories = await Category.find();
+            return res.status(400).render('createNews', {
+                error: errors,
+                categories,
+                formData: { title, content, category }
+            });
+        }
+
+        // Nếu không có lỗi, tạo bài viết mới
         const news = new News({
             title,
             content,
             category,
             author: req.user._id,
-            image: req.file ? `/uploads/${req.file.filename}` : null,
+            image: `/uploads/${req.file.filename}`,
         });
         await news.save();
 
-        await updateNewsCache();
-
         res.redirect('/news');
     } catch (err) {
-        res.status(400).send('Error creating news: ' + err.message);
+        const categories = await Category.find();
+        res.status(400).render('createNews', {
+            error: { general: err.message },
+            categories,
+            formData: { title, content, category }
+        });
     }
 };
+
 
 export const renderEditNewsPage = async(req, res) => {
     try {
@@ -144,10 +173,14 @@ export const deleteNews = async(req, res) => {
     }
 };
 
-export const renderCreateNewsPage = async(req, res) => {
+export const renderCreateNewsPage = async (req, res) => {
     try {
         const categories = await Category.find(); 
-        res.render('createNews', { categories });
+        res.render('createNews', {
+            categories,
+            error: {},         // Truyền error rỗng
+            formData: {}       // Truyền formData rỗng
+        });
     } catch (err) {
         res.status(500).send('Error rendering create news form: ' + err.message);
     }

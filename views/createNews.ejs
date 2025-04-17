@@ -1,0 +1,55 @@
+<input 
+    type="text" 
+    id="title" 
+    name="title" 
+    value="<%= formData?.title || '' %>" 
+    required
+>
+<% if (error?.title) { %>
+    <div class="alert alert-danger"><%= error.title %></div>
+<% } %>
+    </div>
+
+    <div>
+        <label for="content">Content:</label>
+        <textarea 
+            id="content" 
+            name="content" 
+            required
+        ><%= formData?.content || '' %></textarea>
+        <% if (error?.content) { %>
+            <div class="alert alert-danger" style="margin-top: 4px;"><%= error.content %></div>
+        <% } %>
+    </div>
+
+    <div>
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>" <%= formData?.category === String(category._id) ? 'selected' : '' %>>
+                    <%= category.name %>
+                </option>
+            <% }) %>
+        </select>
+    </div>
+
+    <div>
+        <label for="image">Image:</label>
+        <input 
+            type="file" 
+            id="image" 
+            name="image" 
+            accept="image/*" 
+            required
+        >
+        <% if (error?.image) { %>
+            <div class="alert alert-danger" style="margin-top: 4px;"><%= error.image %></div>
+        <% } %>
+    </div>
+
+    <% if (error?.general) { %>
+        <div class="alert alert-danger" style="margin-top: 4px;"><%= error.general %></div>
+    <% } %>
+
+    <button type="submit">Create News</button>
+</form>
