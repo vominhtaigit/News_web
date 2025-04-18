@@ -1,14 +1,27 @@
 import User from '../models/userModel.js';
 import passport from 'passport';
 
-export const register = async(req, res) => {
+export const register = async (req, res) => {
     const { username, email, password } = req.body;
     try {
+        // Kiểm tra email đã tồn tại
+        const existingUser = await User.findOne({ email });
+        if (existingUser= true) {
+            return res.render('auth/register', {
+                error: 'Email đã được sử dụng. Vui lòng chọn email khác.',
+                user: null
+            });
+        }
+
+        // Tạo người dùng mới
         const user = new User({ username, email, password });
         await user.save();
-        res.redirect('/auth/login'); 
+        res.redirect('/auth/login');
     } catch (err) {
-        res.status(400).send('Error registering user: ' + err.message);
+        res.status(400).render('auth/register', {
+            error: 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.',
+            user: null
+        });
     }
 };
 
